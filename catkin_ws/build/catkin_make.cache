@@ -1,0 +1,2 @@
+custom_worlds_testing:maze_solver
+-DCATKIN_DEVEL_PREFIX=/home/ishaanshri95/Desktop/aisem9/autonomous/pa3/aspa3/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/ishaanshri95/Desktop/aisem9/autonomous/pa3/aspa3/catkin_ws/install -G Unix Makefiles

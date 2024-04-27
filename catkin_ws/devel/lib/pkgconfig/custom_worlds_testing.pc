@@ -1,0 +1,8 @@
+prefix=/home/ishaanshri95/Desktop/aisem9/autonomous/pa3/aspa3/catkin_ws/devel
+
+Name: custom_worlds_testing
+Description: Description of custom_worlds_testing
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
