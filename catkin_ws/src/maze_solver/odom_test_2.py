@@ -5,6 +5,15 @@ from tf.transformations import euler_from_quaternion
 from math import atan2, sqrt, tan, pi, fabs
 import numpy as np
 
+from graphdata import graph, get_id_from_name
+
+max_speed = 0.25
+
+threshold_distance_realignment = 2.0
+factor = 1.5
+thresh_small = threshold_distance_realignment / factor
+thresh_large = threshold_distance_realignment * factor
+
 class RobotController:
     def __init__(self, target_x, target_y):
         self.target_x = target_x
@@ -13,6 +22,10 @@ class RobotController:
         rospy.Subscriber('/odom', Odometry, self.odom_callback)
 
     def odom_callback(self, msg):
+        global threshold_distance_realignment
+        global thresh_small
+        global thresh_large
+
         x = msg.pose.pose.position.x
         y = msg.pose.pose.position.y
         orientation_q = msg.pose.pose.orientation
@@ -31,22 +44,27 @@ class RobotController:
 
         # Command to publish
         command = Twist()
-        if distance > 2.0:  # Threshold distance to consider realignment
-            # Determine rotation direction
-            theta = atan2(self.target_y - y, self.target_x - x)
-            delta_theta = theta - yaw
-            command.angular.z = 0.3 if delta_theta > 0 else -0.3
-            command.angular.z *= float(np.sqrt(min(distance, 10.0))) * 0.1
+
+        # Determine rotation direction
+        theta = atan2(self.target_y - y, self.target_x - x)
+        delta_theta = theta - yaw
+
+        if distance > threshold_distance_realignment or abs(delta_theta) > 1.5:  # Threshold distance to consider realignment
+            # print(f'distance: {distance:.3f}  delta_theta: {delta_theta:.2f}')
+            command.angular.z = 0.5 if delta_theta > 0 else -0.5
+            # command.angular.z *= np.sign(delta_theta) * min(0.5, max(abs(delta_theta), 0.09))
         else:
             # Move forward if aligned properly
-            command.linear.x = 0.5
+            command.angular.z = 0.1 if delta_theta > 0 else -0.1
+            command.linear.x = max_speed
 
         self.pub.publish(command)
 
+
 def listener():
     rospy.init_node('go_to_point_line_dist', anonymous=True)
-    controller = RobotController(5.0, 5.0)
+    controller = RobotController(*graph[get_id_from_name['main_gate']]['position'])
     rospy.spin()
 
-if __name__ == '__main__':
-    listener()
+
+listener()

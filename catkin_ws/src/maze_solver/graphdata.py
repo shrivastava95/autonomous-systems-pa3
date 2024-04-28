@@ -516,8 +516,12 @@ graph = {
         'name': vertex_name_mapping[id],
         'id': id,
         'position': vertex,
-    }
+    } 
     for id, vertex in vertices.items()
+}
+
+get_id_from_name = {
+    value['name']: key for key, value in graph.items()
 }
 
 if __name__ == '__main__':
