@@ -400,3 +400,7 @@ vertices = """'id_0'
 'id_133'
 30.2609 -42.0165 0.098466 0 -0 0</pose>
 """
+
+print(vertices.split('\n').__len__() / 3)
+lines = vertices.split('\n')
+vertices = [[lines[3*i][1:-1], list(map(float,lines[3*i + 1].split()[:2]))] for i in range(len(lines) // 3)]
