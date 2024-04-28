@@ -66,5 +66,5 @@ def listener():
     controller = RobotController(*graph[get_id_from_name['main_gate']]['position'])
     rospy.spin()
 
-if __name__ == '__main__':
-    listener()
+
+listener()
