@@ -511,27 +511,43 @@ import numpy as np
 
 vertices = {item[0]: item[1] for item in vertices}
 
+
 graph = {
     id: {
         'name': vertex_name_mapping[id],
         'id': id,
         'position': vertex,
-    } 
+    }
     for id, vertex in vertices.items()
 }
 
+
+
+for id in graph:
+    graph[id]['children'] = []
+
+total = 0
+for tour in tours:
+    for i in range(len(tour)-1):
+        j = i + 1
+        vi = np.array(vertices[tour[i]])
+        vj = np.array(vertices[tour[j]])
+        total += np.sqrt(np.sum(np.square(vi - vj)))
+        graph[tour[i]]['children'].append(tour[j])
+        graph[tour[j]]['children'].append(tour[i])
+        
 get_id_from_name = {
     value['name']: key for key, value in graph.items()
 }
 
+
+
 if __name__ == '__main__':
     total = 0
-
     for tour in tours:
         for i in range(len(tour)-1):
             j = i + 1
             vi = np.array(vertices[tour[i]])
             vj = np.array(vertices[tour[j]])
             total += np.sqrt(np.sum(np.square(vi - vj)))
-
     print(total)

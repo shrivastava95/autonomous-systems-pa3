@@ -13,7 +13,7 @@ threshold_distance_realignment = 2.0
 factor = 1.5
 thresh_small = threshold_distance_realignment / factor
 thresh_large = threshold_distance_realignment * factor
-threshold_distance_to_target = 0.75  # Set the stopping threshold
+threshold_distance_to_target = 0.3  # Set the stopping threshold
 
 class RobotController:
     def __init__(self, target_x, target_y):
@@ -83,9 +83,23 @@ class RobotController:
 
         self.pub.publish(command)
 
-def listener():
+def listener(target_location):
     rospy.init_node('go_to_point_line_dist', anonymous=True)
-    controller = RobotController(*graph[get_id_from_name['main_gate']]['position'])
+    controller = RobotController(*target_location)
     rospy.spin()
 
-listener()
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description='Robot navigation to a specified point.')
+    parser.add_argument('--target', nargs=2, type=float, help='Target coordinates as x and y values')
+    args = parser.parse_args()
+
+    if args.target:
+        listener(args.target)
+    else:
+        print("Error: Please provide the target coordinates using --target option.")
+
+
+if __name__ == "__main__":
+    main()
