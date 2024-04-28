@@ -2,6 +2,14 @@
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry
+
+
+def odom_callback(msg):
+    x = msg.pose.pose.position.x
+    y = msg.pose.pose.position.y
+    rospy.loginfo("X: %s, Y: %s", x, y)
+
 
 def callback(msg):
     regions = {
