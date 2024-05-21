@@ -16,9 +16,10 @@ thresh_large = threshold_distance_realignment * factor
 threshold_distance_to_target = 0.3  # Set the stopping threshold
 
 class RobotController:
-    def __init__(self, target_x, target_y):
+    def __init__(self, alpha_beta, target_x, target_y):
         self.target_x = target_x
         self.target_y = target_y
+        self.forwardvel = np.clip(np.random.beta(*alpha_beta) * max_speed, 0, max_speed) if alpha_beta is not None else max_speed
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         rospy.Subscriber('/odom', Odometry, self.odom_callback)
 
@@ -35,7 +36,7 @@ class RobotController:
         (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
 
         # Calculate distance to target
-        distance_to_target = sqrt((self.target_x - x)**2 + (self.target_y - y)**2)
+        distance_to_target = sqrt((self.target_x - x)**2 + (self.target_y - y)**2);        # self.forwardvel = 0.25;
 
         # print(f'distance: {distance_to_target:.2f}')
         if distance_to_target < threshold_distance_to_target:
@@ -79,13 +80,15 @@ class RobotController:
         else:
             # Move forward if aligned properly
             command.angular.z = 0.1 if delta_theta > 0 else -0.1
-            command.linear.x = max_speed
+            command.linear.x = self.forwardvel
 
         self.pub.publish(command)
 
-def listener(target_location):
+def listener(args):
+    target_location = args.target
+    alpha_beta = args.alphabeta
     rospy.init_node('go_to_point_line_dist', anonymous=True)
-    controller = RobotController(*target_location)
+    controller = RobotController(alpha_beta, target_location[0], target_location[1])
     rospy.spin()
 
 import argparse
@@ -93,10 +96,11 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description='Robot navigation to a specified point.')
     parser.add_argument('--target', nargs=2, type=float, help='Target coordinates as x and y values')
+    parser.add_argument('--alphabeta', nargs=2, type=float, help='Alpha and Beta values for varying the velocity', default=None)
     args = parser.parse_args()
 
     if args.target:
-        listener(args.target)
+        listener(args)
     else:
         print("Error: Please provide the target coordinates using --target option.")
 

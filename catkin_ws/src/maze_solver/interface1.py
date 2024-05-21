@@ -89,7 +89,7 @@ for i in range(len(shortest_path_verbose)-1):
     id_start = shortest_path_verbose[i]
     id_target = shortest_path_verbose[j]
     x, y = graph[get_id_from_name[id_target]]['position']
-    os.system(f'python odom_test_4.py --target {x} {y}')
+    os.system(f'python odom_test_4.py --target {x + 0.2} {y}')
     print(f'reached {shortest_path_verbose[j]}!')
 
 

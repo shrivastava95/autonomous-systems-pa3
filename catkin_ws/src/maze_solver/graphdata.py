@@ -498,6 +498,35 @@ vertex_name_mapping = {
     'id_89': 'phc',
 }
 
+vertex_alpha_beta_mapping = {
+    'id_124' : [ 3, 1] , # 'main_gate',
+    'id_0'   : [ 5, 1] , # 'knowledge_tree',
+    'id_64'  : [ 2, 1] , # 'lhc',
+    'id_73'  : [ 4, 1] , # 'i hostel lane',
+    'id_74'  : [ 4, 1] , # 'b_hostel_lane',
+    'id_72'  : [ 4, 1] , # 'h_hostel_lane',
+    'id_45'  : [ 3, 1] , # 'other_hostel_lane',
+    'id_77'  : [ 2, 1] , # 'old_mess',
+    'id_79'  : [ 2, 1] , # 'new_mess/canteen',
+    'id_56'  : [ 4, 1] , # 'cse_dept',
+    'id_55'  : [ 4, 1] , # 'basic_labs',
+    'id_15'  : [ 2, 1] , # 'shamiyana',
+    'id_8'   : [ 5, 1] , # 'jodhpur club',
+    'id_127' : [ 4, 1] , # 'library',
+    'id_118' : [ 3, 1] , # 'academic_block',
+    'id_40'  : [ 6, 1] , # 'civil_dept',
+    'id_33'  : [ 6, 1] , # 'mt_dept',
+    'id_27'  : [ 6, 1] , # 'sme_dept',
+    'id_29'  : [ 6, 1] , # 'sola_dept',
+    'id_30'  : [ 6, 1] , # 'math_dept',
+    'id_103' : [ 3, 1] , # 'racetrack_football_ground',
+    'id_104' : [ 3, 1] , # 'sports_complex',
+    'id_132' : [ 3, 1] , # 'sports_courts',
+    'id_107' : [ 3, 1] , # 'cricket_ground',
+    'id_89'  : [ 5, 1] , # 'phc',
+}
+
+
 for vertex in vertices:
     if vertex[0] not in vertex_name_mapping:
         vertex_name_mapping[vertex[0]] = vertex[0]
@@ -517,6 +546,7 @@ graph = {
         'name': vertex_name_mapping[id],
         'id': id,
         'position': vertex,
+        'alpha_beta': vertex_alpha_beta_mapping[id] if id in vertex_alpha_beta_mapping else NotImplementedError,
     }
     for id, vertex in vertices.items()
 }
